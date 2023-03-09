@@ -56,7 +56,8 @@ class CBPE(AbstractEstimator):
         calibration: Optional[str] = None,
         calibrator: Optional[Calibrator] = None,
         normalize_confusion_matrix: Optional[str] = None,
-        business_cost_matrix: Optional[Union[List, np.ndarray]] = None,
+        business_value_matrix: Optional[Union[List, np.ndarray]] = None,
+        normalize_business_value: Optional[str] = None,
     ):
         """Initializes a new CBPE performance estimator.
 
@@ -102,11 +103,15 @@ class CBPE(AbstractEstimator):
             of observations. If 'true', the confusion matrix will be normalized by the total number of
             observations for each true class. If 'predicted', the confusion matrix will be normalized by the
             total number of observations for each predicted class.
-        business_cost_matrix: Optional[Union[List, np.ndarray]], default=None
-            A matrix containing the business costs for each combination of true and predicted class.
-            The i-th row and j-th column entry of the matrix contains the business cost for predicting the
-            i-th class as the j-th class. The matrix must have the same number of rows and columns as the number
-            of classes in the problem.
+        business_value_matrix: Optional[Union[List, np.ndarray]], default=None
+            A matrix containing the business value for each combination of true and predicted class.
+            The i-th row and j-th column entry of the matrix contains the business value for predicting the
+            i-th class as the j-th class.
+        normalize_business_value: str, default=None
+            Determines how the business value will be normalized. Allowed values are None and
+            'per_prediction'. If None, the business value will not be normalized and the value
+            returned will be the total value per chunk. If 'per_prediction', the value will be normalized
+            by the number of predictions in the chunk.
 
         Examples
         --------
@@ -170,7 +175,8 @@ class CBPE(AbstractEstimator):
                 timestamp_column_name=self.timestamp_column_name,
                 chunker=self.chunker,
                 normalize_confusion_matrix=normalize_confusion_matrix,
-                business_cost_matrix=business_cost_matrix,
+                business_value_matrix=business_value_matrix,
+                normalize_business_value=normalize_business_value,
             )
             for metric in metrics
         ]
